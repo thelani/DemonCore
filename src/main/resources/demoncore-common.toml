@@ -1,0 +1,26 @@
+﻿#  DemonCore 
+
+
+[basic]
+speedThreshold = 0.0
+maxChunks = 128
+enableDebug = false
+[optimization]
+enableOptimization = true
+targetFPS = 58
+aggressiveMode = true
+resourceBalance = "AGGRESSIVE"
+[cache]
+enableCache = true
+cacheSize = 300
+[performance]
+autoGC = true
+ramThreshold = 0.85
+cpuThreshold = 0.85
+[visibility]
+enableTimeout = true
+timeoutSeconds = 20
+checkInterval = 100
+[loading]
+chunksPerTick = 10
+sodiumOptimization = true
