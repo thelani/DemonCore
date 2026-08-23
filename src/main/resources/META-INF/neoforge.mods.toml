@@ -1,0 +1,38 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+
+license="MIT"
+
+[[mods]]
+modId="demoncore"
+version="1.0.0"
+displayName="DemonCore ☢️"
+description='''
+EXTREME chunk loading for ultra-high speed vehicles (6400+ m/s).
+⚠️ WARNING: Aggressive memory and CPU usage!
+Like a nuclear reactor: Incredibly powerful but needs careful handling.
+VULCAN MODE: Maximum performance, no safety limits.
+'''
+authors="Lani"
+displayURL="https://github.com/lani/demoncore"
+
+[[dependencies.demoncore]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.demoncore]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.demoncore]]
+modId="create"
+type="optional"
+versionRange="[0.5,)"
+ordering="AFTER"
+side="BOTH"

@@ -1,0 +1,80 @@
+﻿#=================================
+#  DemonCore - MAXIMUM Performance
+#  Always Active + Chunk Visibility
+#=================================
+
+[basic]
+# Minimum speed (m/s) to activate chunk loading
+# 0.0 = ALWAYS ACTIVE (no speed limit)
+# Range: 0.0 ~ 1000.0
+speedThreshold = 0.0
+
+# Maximum chunks to preload
+# MAXIMUM: 128 chunks (~2048 blok)
+# Range: 4 ~ 128
+maxChunks = 128
+
+# Enable debug logging to latest.log
+enableDebug = false
+
+# Performance Optimization
+# Automatically adjusts based on system resources
+[optimization]
+# Enable smart optimization system
+enableOptimization = true
+
+# Target FPS for optimization
+targetFPS = 58
+
+# Aggressive optimization mode - ACTIVE
+aggressiveMode = true
+
+# Resource balance strategy - AGGRESSIVE
+resourceBalance = "AGGRESSIVE"
+
+# Cache System
+[cache]
+# Enable intelligent caching system
+enableCache = true
+
+# Large cache for maximum performance
+# Range: 10 ~ 1000
+cacheSize = 300
+
+# Performance Thresholds
+[performance]
+# Automatic garbage collection
+autoGC = true
+
+# RAM usage threshold (0.0-1.0)
+# Range: 0.5 ~ 0.95
+ramThreshold = 0.85
+
+# CPU usage threshold (0.0-1.0)
+# Range: 0.5 ~ 0.95
+cpuThreshold = 0.85
+
+# Chunk Visibility System (NEW!)
+[visibility]
+# Enable chunk visibility timeout
+# Unload invisible chunks after timeout
+enableTimeout = true
+
+# Timeout in seconds (20 seconds)
+# Range: 5 ~ 120
+timeoutSeconds = 20
+
+# Check interval in ticks (100 ticks = 5 seconds)
+# Range: 20 ~ 200
+checkInterval = 100
+
+# Chunk Loading Speed (NEW!)
+[loading]
+# Chunks per tick (2x faster)
+# Default: 5, Maximum: 20
+# Range: 3 ~ 20
+chunksPerTick = 10
+
+# Sodium optimization mode
+# Uses Sodium's render pipeline for better performance
+sodiumOptimization = true
