@@ -8,13 +8,10 @@ modId="demoncore"
 version="1.0.0"
 displayName="DemonCore ☢️"
 description='''
-EXTREME chunk loading for ultra-high speed vehicles (6400+ m/s).
-⚠️ WARNING: Aggressive memory and CPU usage!
-Like a nuclear reactor: Incredibly powerful but needs careful handling.
-VULCAN MODE: Maximum performance, no safety limits.
+
 '''
 authors="Lani"
-displayURL="https://github.com/lani/demoncore"
+displayURL="https://github.com/thelani/DemonCore"
 
 [[dependencies.demoncore]]
 modId="neoforge"
