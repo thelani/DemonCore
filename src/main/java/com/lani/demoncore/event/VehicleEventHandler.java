@@ -4,7 +4,6 @@ import com.lani.demoncore.chunk.ChunkPreLoader;
 import com.lani.demoncore.config.DemonCoreConfig;
 import com.lani.demoncore.detection.SpeedTracker;
 import com.lani.demoncore.detection.VehicleDetector;
-import com.lani.demoncore.safety.VoidProtection;
 import com.lani.demoncore.safety.EntityUnloadPrevention;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -27,10 +26,6 @@ public class VehicleEventHandler {
 
         if (entity.level().isClientSide) {
             return;
-        }
-
-        if (VoidProtection.isEnabled()) {
-            VoidProtection.ensureChunkLoaded(entity);
         }
 
         boolean isVehicle = entity.isVehicle();

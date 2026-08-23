@@ -70,4 +70,23 @@ public class SableCompat {
         Vec3 totalVelocity = entityVelocity.add(sableVelocity);
         return totalVelocity.length() * 20.0;
     }
+
+    public static boolean isEntityInSubLevel(Entity entity) {
+        if (!sableLoaded || getSubLevelMethod == null) {
+            return false;
+        }
+
+        try {
+            Object subLevel = getSubLevelMethod.invoke(null, entity);
+            return subLevel != null;
+        } catch (Exception e) {
+            LOGGER.trace("Could not check Sable sublevel: {}", e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static double getEntityVelocityMagnitude(Entity entity) {
+        return getTotalSpeed(entity);
+    }
 }

@@ -27,6 +27,8 @@ public class DemonCoreConfig {
     public static final ModConfigSpec.IntValue VISIBILITY_TIMEOUT_SECONDS;
     public static final ModConfigSpec.IntValue VISIBILITY_CHECK_INTERVAL;
 
+    public static final ModConfigSpec.BooleanValue PREVENT_CHUNK_UNLOAD;
+
     public static final ModConfigSpec.IntValue CHUNKS_PER_TICK;
     public static final ModConfigSpec.BooleanValue SODIUM_OPTIMIZATION;
 
@@ -132,6 +134,11 @@ public class DemonCoreConfig {
         VISIBILITY_CHECK_INTERVAL = BUILDER
             .comment("Check interval in ticks (100 ticks = 5 seconds)")
             .defineInRange("checkInterval", 100, 20, 200);
+
+        PREVENT_CHUNK_UNLOAD = BUILDER
+            .comment("Prevent chunk unloading for high-speed vehicles")
+            .comment("Keeps chunks loaded to prevent ejection")
+            .define("preventChunkUnload", true);
 
         BUILDER.pop();
 

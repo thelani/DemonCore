@@ -5,7 +5,6 @@ import com.lani.demoncore.config.DemonCoreConfig;
 import com.lani.demoncore.optimization.PerformanceMonitor;
 import com.lani.demoncore.optimization.ResourceManager;
 import com.lani.demoncore.optimization.CacheSystem;
-import com.lani.demoncore.safety.VoidProtection;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -62,12 +61,10 @@ public class DemonCoreCommand {
         }
         
         String loaderStats = DemonCore.getInstance().getChunkLoader().getStats();
-        String voidStats = VoidProtection.getStats();
         
         ctx.getSource().sendSuccess(() -> Component.literal(
             "§c☢ DemonCore Statistics:\n" +
-            "§f" + loaderStats + "\n" +
-            "§f" + voidStats
+            "§f" + loaderStats
         ), false);
         
         return 1;

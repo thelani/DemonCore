@@ -456,4 +456,24 @@ public class ChunkPreLoader {
     public ChunkVisibilityManager getVisibilityManager() {
         return visibilityManager;
     }
+
+    /**
+     * Force load a specific chunk immediately
+     * Used by safety systems to prevent entity unload
+     */
+    public static void forceLoadChunk(ServerLevel level, ChunkPos chunkPos) {
+        try {
+            ServerChunkCache cache = level.getChunkSource();
+            TicketType<ChunkPos> ticket = TicketType.create("demoncore_force", 
+                Comparator.comparingLong(ChunkPos::toLong), 600);
+            
+            cache.addRegionTicket(ticket, chunkPos, 0, chunkPos);
+            
+            if (DemonCoreConfig.ENABLE_DEBUG.get()) {
+                DemonCore.LOGGER.trace("Force loaded chunk {}", chunkPos);
+            }
+        } catch (Exception e) {
+            DemonCore.LOGGER.warn("Failed to force load chunk {}: {}", chunkPos, e.getMessage());
+        }
+    }
 }
