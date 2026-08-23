@@ -4,7 +4,7 @@
 ![NeoForge](https://img.shields.io/badge/NeoForge-21.1%2B-orange)
 ![Status](https://img.shields.io/badge/status-experimental-red)
 
-**DemonCore** is an **EXTREME** chunk loading and optimization mod designed to keep up with ultra-high-speed vehicles (**6400+ m/s**).
+**DemonCore** is **chunk loading** and optimization mod.
 
 Whether you're pushing the limits of the game or building massive moving structures, DemonCore steps in where vanilla mechanics and standard chunk loaders fail — keeping your vehicles running seamlessly without lag spikes or empty voids.
 
