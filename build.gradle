@@ -1,0 +1,84 @@
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.0.154'
+}
+
+version = '1.0.0-neoforge'
+group = 'com.lani.demoncore'
+archivesBaseName = 'demoncore'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven {
+        name = "Cursemaven"
+        url = "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name = "Shedaniel"
+        url = "https://maven.shedaniel.me/"
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/releases/"
+    }
+    mavenCentral()
+}
+
+runs {
+    // Client run config
+    client {
+        systemProperty 'neoforge.enabledGameTestNamespaces', 'demoncore'
+    }
+    
+    // Server run config
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', 'demoncore'
+        programArgument '--nogui'
+    }
+}
+
+dependencies {
+    // NeoForge dependency
+    implementation "net.neoforged:neoforge:21.1.72"
+    
+    // GSON for JSON serialization
+    implementation "com.google.code.gson:gson:2.10.1"
+    
+    // Create mod (optional - for better contraption detection)
+    // If Create is installed, DemonCore will detect contraptions better
+    // compileOnly "maven.modrinth:create-new-age:2.1.0" // OPTIONAL - uncomment if needed
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    exclude 'com/simibubi/**'
+    exclude 'dev/ryanhcode/**'
+    
+    manifest {
+        attributes([
+            "Specification-Title": "DemonCore",
+            "Specification-Vendor": "Lani",
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor": "Lani",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "demoncore.mixins.json"
+        ])
+    }
+}
