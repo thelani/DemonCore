@@ -14,7 +14,6 @@ Whether you're pushing the limits of the game or building massive moving structu
 
 ## 🚀 Key Features
 
-- **Ultra-High-Speed Chunk Loading** — custom-built to load chunks for vehicles traveling at extreme velocities (6400+ blocks per second).
 - **Smart Hardware Balancing** — intelligently balances workload across your CPU, GPU, and RAM to keep framerates stable during heavy chunk generation.
 - **Aeronautics Velocity Logging** — flying too fast in **Aeronautics** to see your speed on-screen? DemonCore logs your exact real-time flight speed to your `latest.log` file.
 - **VULCAN MODE** — an override toggle that removes all safety limits and unlocks your hardware's absolute maximum capacity.
