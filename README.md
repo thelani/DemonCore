@@ -38,12 +38,12 @@ Works great with any vehicle or physics mod — particularly recommended alongsi
 ## 📥 Installation
 
 1. Install **NeoForge 21.1+** for Minecraft **1.21.1**.
-2. Download DemonCore from [Modrinth](https://modrinth.com).
+2. Download DemonCore from [Modrinth](https://modrinth.com/mod/demoncore) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/demoncore-opt)
 3. Drop the `.jar` into your `mods` folder.
 4. Launch the game.
 
 ## 🔗 Links
 
-- [Modrinth Page](https://modrinth.com)
+- [Modinth Page](https://modrinth.com/mod/demoncore)
 - [Wiki](../../wiki)
 - [Issue Tracker](../../issues)
