@@ -8,7 +8,7 @@
 
 Whether you're pushing the limits of the game or building massive moving structures, DemonCore steps in where vanilla mechanics and standard chunk loaders fail — keeping your vehicles running seamlessly without lag spikes or empty voids.
 
-![Before After]([https://cdn.modrinth.com/data/cached_images/be97792390667f738dfb39794aee5a10a0f07e6b.png](https://cdn.modrinth.com/data/cached_images/99d5d9e19a1079f9d143fcfa935d3eb44d6a636a.png))
+![Before After]([https://cdn.modrinth.com/data/cached_images/be97792390667f738dfb39794aee5a10a0f07e6b.png])
 
 📖 **Full documentation:** see the [Wiki](../../wiki) for details on every feature, Vulcan Mode, and safety guidance.
 
