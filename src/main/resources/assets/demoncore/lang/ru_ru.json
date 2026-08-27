@@ -1,0 +1,21 @@
+{
+  "demoncore.command.status": "§c☢ Статус DemonCore:\n§6Порог активации: §f%s б/с\n§6Макс. чанков: §f%s\n§6Оптимизация: %s\n§6Система кэша: %s\n§6Целевой FPS: §f%s\n§6Баланс ресурсов: §f%s\n§6Отладка: §f%s",
+  "demoncore.command.enabled": "§aВКЛЮЧЕНО",
+  "demoncore.command.disabled": "§cВЫКЛЮЧЕНО",
+  "demoncore.command.on": "ВКЛ",
+  "demoncore.command.off": "ВЫКЛ",
+  "demoncore.command.stats.disabled": "§c☢ Статистика недоступна - оптимизация отключена\n§7Включите оптимизацию в настройках для просмотра статистики",
+  "demoncore.command.stats": "§c☢ Статистика DemonCore:\n§f%s",
+  "demoncore.command.perf.disabled": "§c☢ Мониторинг производительности недоступен - оптимизация отключена",
+  "demoncore.command.perf": "§c☢ Мониторинг производительности:\n§6Система: §f%s\n§6Ресурсы: §f%s\n§6Кэш: §f%s",
+  "demoncore.command.cache.disabled": "Кэш отключён",
+  "demoncore.command.help": "§c☢ Команды DemonCore:\n§6/demoncore status §7- Показать конфигурацию\n§6/demoncore stats §7- Показать статистику загрузки чанков\n§6/demoncore perf §7- Показать мониторинг производительности\n§6/demoncore vulcan <enable|disable|status> §7- Управление РЕЖИМОМ VULCAN\n§7Измените config/demoncore-common.toml для изменения настроек",
+  "demoncore.command.vulcan.singleplayer_only": "§c⚠️  РЕЖИМ VULCAN доступен только в одиночной игре/по сети!",
+  "demoncore.command.vulcan.already_enabled": "§c⚠️  РЕЖИМ VULCAN уже включён!",
+  "demoncore.command.vulcan.enabled": "§c☢ ========================================\n§c⚠️  РЕЖИМ VULCAN ВКЛЮЧЁН ⚠️\n§c☢ ========================================\n§6Все ограничения безопасности сняты!\n§6Активные эффекты:\n§f  - 2X ёмкость загрузки чанков\n§f  - 3X чанков за тик\n§f  - Предупреждения производительности игнорируются\n§f  - Активное управление жизненным циклом TTL-тикетов\n§c⚠️  ПРЕДУПРЕЖДЕНИЕ: Может вызвать вылеты или падение в пустоту!\n§7Используйте §6/demoncore vulcan disable §7для отключения",
+  "demoncore.command.vulcan.already_disabled": "§cРЕЖИМ VULCAN уже отключён",
+  "demoncore.command.vulcan.disabled": "§c☢ РЕЖИМ VULCAN отключён\n§aОграничения безопасности восстановлены\n§7Возвращение к нормальной работе",
+  "demoncore.command.vulcan.status.active": "§c☢ РЕЖИМ VULCAN: §4§lАКТИВЕН\n§c⚠️  Все ограничения безопасности сняты!\n§6Активные множители:\n§f  - Ёмкость чанков: §e2X\n§f  - Скорость загрузки: §e3X\n§f  - Проверки производительности: §cОТКЛЮЧЕНЫ\n§7Используйте §6/demoncore vulcan disable §7для восстановления ограничений",
+  "demoncore.command.vulcan.status.disabled": "§c☢ РЕЖИМ VULCAN: §aОТКЛЮЧЁН\n§aОграничения безопасности активны\n§7Используйте §6/demoncore vulcan enable §7для снятия ограничений\n§7§oПредупреждение: Только для опытных пользователей!",
+  "demoncore.warning.singleplayer": "§cDemonCore: Предзагрузка чанков работает только в одиночных/LAN-мирах."
+}

@@ -1,0 +1,21 @@
+{
+  "demoncore.command.status": "§c☢ Estado de DemonCore:\n§6Umbral de activación: §f%s b/s\n§6Chunks máximos: §f%s\n§6Optimización: %s\n§6Sistema de caché: %s\n§6FPS objetivo: §f%s\n§6Equilibrio de recursos: §f%s\n§6Depuración: §f%s",
+  "demoncore.command.enabled": "§aACTIVADO",
+  "demoncore.command.disabled": "§cDESACTIVADO",
+  "demoncore.command.on": "SÍ",
+  "demoncore.command.off": "NO",
+  "demoncore.command.stats.disabled": "§c☢ Estadísticas no disponibles - optimización desactivada\n§7Activa la optimización en la configuración para ver estadísticas",
+  "demoncore.command.stats": "§c☢ Estadísticas de DemonCore:\n§f%s",
+  "demoncore.command.perf.disabled": "§c☢ Monitoreo de rendimiento no disponible - optimización desactivada",
+  "demoncore.command.perf": "§c☢ Monitoreo de Rendimiento:\n§6Sistema: §f%s\n§6Recursos: §f%s\n§6Caché: §f%s",
+  "demoncore.command.cache.disabled": "Caché desactivado",
+  "demoncore.command.help": "§c☢ Comandos de DemonCore:\n§6/demoncore status §7- Mostrar configuración\n§6/demoncore stats §7- Mostrar estadísticas de carga de chunks\n§6/demoncore perf §7- Mostrar monitoreo de rendimiento\n§6/demoncore vulcan <enable|disable|status> §7- Control de MODO VULCAN\n§7Edita config/demoncore-common.toml para cambiar ajustes",
+  "demoncore.command.vulcan.singleplayer_only": "§c⚠️  ¡MODO VULCAN solo se puede usar en un jugador/LAN!",
+  "demoncore.command.vulcan.already_enabled": "§c⚠️  ¡MODO VULCAN ya está activado!",
+  "demoncore.command.vulcan.enabled": "§c☢ ========================================\n§c⚠️  MODO VULCAN ACTIVADO ⚠️\n§c☢ ========================================\n§6¡Todos los límites de seguridad han sido eliminados!\n§6Efectos activos:\n§f  - 2X capacidad de carga de chunks\n§f  - 3X chunks por tick\n§f  - Advertencias de rendimiento ignoradas\n§f  - Gestión activa del ciclo de vida TTL de tickets\n§c⚠️  ¡ADVERTENCIA: Puede causar crasheos o caídas al vacío!\n§7Usa §6/demoncore vulcan disable §7para desactivar",
+  "demoncore.command.vulcan.already_disabled": "§cMODO VULCAN ya está desactivado",
+  "demoncore.command.vulcan.disabled": "§c☢ MODO VULCAN desactivado\n§aLímites de seguridad restaurados\n§7Operación normal reanudada",
+  "demoncore.command.vulcan.status.active": "§c☢ MODO VULCAN: §4§lACTIVO\n§c⚠️  ¡Todos los límites de seguridad eliminados!\n§6Multiplicadores activos:\n§f  - Capacidad de chunks: §e2X\n§f  - Velocidad de carga: §e3X\n§f  - Comprobaciones de rendimiento: §cDESACTIVADAS\n§7Usa §6/demoncore vulcan disable §7para restaurar límites",
+  "demoncore.command.vulcan.status.disabled": "§c☢ MODO VULCAN: §aDESACTIVADO\n§aLímites de seguridad activos\n§7Usa §6/demoncore vulcan enable §7para eliminar límites\n§7§o¡Advertencia: Solo para usuarios experimentados!",
+  "demoncore.warning.singleplayer": "§cDemonCore: La precarga de chunks solo funciona en mundos de un jugador/LAN."
+}

@@ -1,22 +1,16 @@
 {
   "required": false,
-  "priority": 10000,
   "minVersion": "0.8",
   "package": "com.lani.demoncore.mixin",
   "compatibilityLevel": "JAVA_21",
-  "refmap": "demoncore.refmap.json",
-  "mixins": [
-    "DebugEjectionMixin",
-    "SeatEntityTickMixin",
-    "ForceRidingMixin",
-    "SableSpeedCheckBypassMixin",
-    "HighSpeedEjectionGuardMixin",
-    "PreventHighSpeedEjectionMixin",
-    "PreventEjectionMixin",
-    "ChunkUnloadEjectionFix",
-    "ContraptionSeatMixin",
-    "SodiumChunkDistanceMixin",
-    "SodiumChunkRenderDistanceMixin"
+  "mixins": [],
+  "client": [
+    "BlockEntityRenderDispatcherMixin",
+    "EntityRenderDispatcherMixin",
+    "LevelRendererMixin",
+    "LivingEntityRendererMixin",
+    "ParticleEngineMixin",
+    "WindowMixin"
   ],
   "injectors": {
     "defaultRequire": 0

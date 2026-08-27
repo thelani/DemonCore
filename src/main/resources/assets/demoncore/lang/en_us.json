@@ -1,0 +1,21 @@
+{
+  "demoncore.command.status": "§c☢ DemonCore Status:\n§6Activation Threshold: §f%s b/s\n§6Max Chunks: §f%s\n§6Optimization: %s\n§6Cache System: %s\n§6Target FPS: §f%s\n§6Resource Balance: §f%s\n§6Debug: §f%s",
+  "demoncore.command.enabled": "§aENABLED",
+  "demoncore.command.disabled": "§cDISABLED",
+  "demoncore.command.on": "ON",
+  "demoncore.command.off": "OFF",
+  "demoncore.command.stats.disabled": "§c☢ Statistics unavailable - optimization disabled\n§7Enable optimization in config to see stats",
+  "demoncore.command.stats": "§c☢ DemonCore Statistics:\n§f%s",
+  "demoncore.command.perf.disabled": "§c☢ Performance monitoring unavailable - optimization disabled",
+  "demoncore.command.perf": "§c☢ Performance Monitoring:\n§6System: §f%s\n§6Resources: §f%s\n§6Cache: §f%s\n§6Advanced: §f%s",
+  "demoncore.command.cache.disabled": "Cache disabled",
+  "demoncore.command.help": "§c☢ DemonCore Commands:\n§6/demoncore status §7- Show configuration\n§6/demoncore stats §7- Show chunk loading stats\n§6/demoncore perf §7- Show performance monitoring\n§6/demoncore vulcan <enable|disable|status> §7- VULCAN MODE control\n§7Edit config/demoncore-common.toml to change settings",
+  "demoncore.command.vulcan.singleplayer_only": "§c⚠️  VULCAN MODE can only be used in singleplayer/LAN!",
+  "demoncore.command.vulcan.already_enabled": "§c⚠️  VULCAN MODE is already enabled!",
+  "demoncore.command.vulcan.enabled": "§c☢ ========================================\n§c⚠️  VULCAN MODE ENABLED ⚠️\n§c☢ ========================================\n§6All safety limits have been removed!\n§6Active effects:\n§f  - 2X chunk loading capacity\n§f  - 3X chunks per tick\n§f  - Performance warnings ignored\n§f  - Active TTL ticket lifecycle management\n§c⚠️  WARNING: May cause crashes or void falls!\n§7Use §6/demoncore vulcan disable §7to turn off",
+  "demoncore.command.vulcan.already_disabled": "§cVULCAN MODE is already disabled",
+  "demoncore.command.vulcan.disabled": "§c☢ VULCAN MODE disabled\n§aSafety limits restored\n§7Normal operation resumed",
+  "demoncore.command.vulcan.status.active": "§c☢ VULCAN MODE: §4§lACTIVE\n§c⚠️  All safety limits removed!\n§6Active multipliers:\n§f  - Chunk capacity: §e2X\n§f  - Load speed: §e3X\n§f  - Performance checks: §cDISABLED\n§7Use §6/demoncore vulcan disable §7to restore limits",
+  "demoncore.command.vulcan.status.disabled": "§c☢ VULCAN MODE: §aDISABLED\n§aSafety limits active\n§7Use §6/demoncore vulcan enable §7to remove limits\n§7§oWarning: Only for experienced users!",
+  "demoncore.warning.singleplayer": "§cDemonCore: Chunk pre-loading only works in singleplayer/LAN worlds."
+}

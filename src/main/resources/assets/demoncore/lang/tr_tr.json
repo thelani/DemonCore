@@ -1,0 +1,21 @@
+{
+  "demoncore.command.status": "§c☢ DemonCore Durumu:\n§6Aktivasyon Eşiği: §f%s b/s\n§6Maksimum Chunk: §f%s\n§6Optimizasyon: %s\n§6Önbellek (Cache) Sistemi: %s\n§6Hedef FPS: §f%s\n§6Kaynak Dengesi: §f%s\n§6Hata Ayıklama (Debug): §f%s",
+  "demoncore.command.enabled": "§aAÇIK",
+  "demoncore.command.disabled": "§cKAPALI",
+  "demoncore.command.on": "AÇIK",
+  "demoncore.command.off": "KAPALI",
+  "demoncore.command.stats.disabled": "§c☢ İstatistikler kullanılamıyor - optimizasyon kapalı\n§7İstatistikleri görmek için yapılandırmadan optimizasyonu açın",
+  "demoncore.command.stats": "§c☢ DemonCore İstatistikleri:\n§f%s",
+  "demoncore.command.perf.disabled": "§c☢ Performans izleme kullanılamıyor - optimizasyon kapalı",
+  "demoncore.command.perf": "§c⚛ Performans İzleme:\n§6Sistem: §f%s\n§6Kaynaklar: §f%s\n§6Önbellek: §f%s\n§6Gelişmiş: §f%s",
+  "demoncore.command.cache.disabled": "Önbellek kapalı",
+  "demoncore.command.help": "§c☢ DemonCore Komutları:\n§6/demoncore status §7- Yapılandırmayı gösterir\n§6/demoncore stats §7- Chunk yükleme istatistiklerini gösterir\n§6/demoncore perf §7- Performans izlemeyi gösterir\n§6/demoncore vulcan <enable|disable|status> §7- VULCAN MODE kontrolü\n§7Ayarları değiştirmek için config/demoncore-common.toml dosyasını düzenleyin",
+  "demoncore.command.vulcan.singleplayer_only": "§c⚠️  VULCAN MODE sadece tek oyunculu (Singleplayer) / LAN'da kullanılabilir!",
+  "demoncore.command.vulcan.already_enabled": "§c⚠️  VULCAN MODE zaten açık!",
+  "demoncore.command.vulcan.enabled": "§c☢ ========================================\n§c⚠️  VULCAN MODE AKTİF ⚠️\n§c☢ ========================================\n§6Tüm güvenlik sınırları kaldırıldı!\n§6Aktif etkiler:\n§f  - 2X chunk yükleme kapasitesi\n§f  - Tick başına 3X chunk\n§f  - Performans uyarıları yoksayılır\n§f  - Aktif TTL ticket yaşam döngüsü yönetimi\n§c⚠️  DİKKAT: Çökmelere veya boşluğa düşmelere sebep olabilir!\n§7Kapatmak için §6/demoncore vulcan disable §7yazın",
+  "demoncore.command.vulcan.already_disabled": "§cVULCAN MODE zaten kapalı",
+  "demoncore.command.vulcan.disabled": "§c☢ VULCAN MODE devre dışı\n§aGüvenlik sınırları geri yüklendi\n§7Normal işleyişe dönüldü",
+  "demoncore.command.vulcan.status.active": "§c☢ VULCAN MODE: §4§lAKTİF\n§c⚠️  Tüm güvenlik sınırları kaldırıldı!\n§6Aktif çarpanlar:\n§f  - Chunk kapasitesi: §e2X\n§f  - Yükleme hızı: §e3X\n§f  - Performans denetimleri: §cKAPALI\n§7Sınırları geri yüklemek için §6/demoncore vulcan disable §7yazın",
+  "demoncore.command.vulcan.status.disabled": "§c☢ VULCAN MODE: §aDEVRE DIŞI\n§aGüvenlik sınırları aktif\n§7Sınırları kaldırmak için §6/demoncore vulcan enable §7yazın\n§7§oUyarı: Yalnızca deneyimli kullanıcılar içindir!",
+  "demoncore.warning.singleplayer": "§cDemonCore: Chunk pre-loading özelliği sadece tek oyunculu veya LAN dünyalarında çalışır."
+}
