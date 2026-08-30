@@ -31,7 +31,7 @@ public final class ResourceManager {
         if (used > peakAllocatedBytes) {
             peakAllocatedBytes = used;
         }
-        activeAllocations = ChunkPosCache.size();
+        activeAllocations = CacheSystem.chunkSize();
     }
 
     public static double getUsageRatio() {

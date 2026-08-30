@@ -18,17 +18,16 @@ public final class DimensionChangeOptimizer {
         transitions++;
         lastTransitionMs = System.currentTimeMillis();
 
-        
-        ChunkPosCache.clear();
+        CacheSystem.clearAll();
+        CacheSystem.init();
 
-        
         FrameProfiler.reset();
-        EntityCuller.reset();
-        BlockEntityCuller.reset();
+        EntityLODSystem.reset();
         ParticleBudget.reset();
+        TickThrottleSystem.reset();
 
         if (DemonCoreConfig.isDebug()) {
-            LOGGER.info("Dimension change {} -> {}, DemonCore state reset", from, to);
+            LOGGER.info("Dimension change {} -> {}, DemonCore state reset (all caches cleared via CacheSystem)", from, to);
         }
     }
 

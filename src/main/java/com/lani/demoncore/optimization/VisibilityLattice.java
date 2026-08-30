@@ -59,8 +59,8 @@ public final class VisibilityLattice {
         double fz = Math.cos(yawRad);
 
         int cs = cellSize();
-        int beCullDist = DemonCoreConfig.getInt(DemonCoreConfig.BLOCK_ENTITY_CULL_DISTANCE, 48);
-        int entCullDist = DemonCoreConfig.getInt(DemonCoreConfig.ENTITY_CULL_DISTANCE, 96);
+        int beCullDist = 64;
+        int entCullDist = DemonCoreConfig.getInt(DemonCoreConfig.LOD_BILLBOARD_DISTANCE, 72);
         int beCellRange = (beCullDist / cs) + 1;
         int entCellRange = (entCullDist / cs) + 1;
 

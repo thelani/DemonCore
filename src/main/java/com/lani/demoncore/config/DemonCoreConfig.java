@@ -47,13 +47,12 @@ public final class DemonCoreConfig {
     
     
     public static final ModConfigSpec.BooleanValue RENDER_OPTIMIZATION;
-    public static final ModConfigSpec.BooleanValue ENTITY_CULLING;
-    public static final ModConfigSpec.IntValue ENTITY_CULL_DISTANCE;
     public static final ModConfigSpec.IntValue ENTITY_SHADOW_DISTANCE;
+
     public static final ModConfigSpec.BooleanValue BLOCK_ENTITY_CULLING;
     public static final ModConfigSpec.IntValue BLOCK_ENTITY_CULL_DISTANCE;
 
-    
+
     public static final ModConfigSpec.BooleanValue GEOMETRY_CACHE_ENABLED;
     public static final ModConfigSpec.IntValue GEOMETRY_CACHE_MB;
     public static final ModConfigSpec.BooleanValue VISIBILITY_LATTICE;
@@ -164,21 +163,21 @@ public final class DemonCoreConfig {
                 .comment("Minimum vehicle speed in blocks/second before pre-loading kicks in.",
                         "0 = always active. Raising this saves CPU when you are moving slowly.")
                 .translation(T + "chunkLoading.activationSpeed")
-                .defineInRange("activationSpeed", 24.0, 0.0, 2000.0);
+                .defineInRange("activationSpeed", 20.0, 0.0, 2000.0);
 
         MAX_CHUNKS = common
                 .comment("Maximum number of chunks tracked ahead of a single vehicle.",
-                        "Each tracked chunk costs server CPU and memory - 96 is a good balance,",
+                        "Each tracked chunk costs server CPU and memory - 128 is aggressive but safe,",
                         "values above 256 mainly help at 3000+ blocks/second.")
                 .translation(T + "chunkLoading.maxChunks")
-                .defineInRange("maxChunks", 96, 8, 512);
+                .defineInRange("maxChunks", 128, 8, 512);
 
         CHUNKS_PER_TICK = common
                 .comment("Baseline number of chunk tickets submitted per server tick.",
                         "With 'adaptiveBackpressure' on this is only the upper bound;",
                         "DemonCore automatically slows down when the server tick gets busy.")
                 .translation(T + "chunkLoading.chunksPerTick")
-                .defineInRange("chunksPerTick", 16, 1, 128);
+                .defineInRange("chunksPerTick", 20, 1, 128);
 
         TICKET_RADIUS = common
                 .comment("Radius of each chunk ticket.",
@@ -210,9 +209,9 @@ public final class DemonCoreConfig {
 
         TARGET_MSPT = common
                 .comment("Server tick time budget in milliseconds that adaptive backpressure aims to stay under.",
-                        "50 ms = 20 TPS. Lower values leave more CPU headroom for rendering.")
+                        "50 ms = 20 TPS. 40ms leaves more CPU headroom for rendering.")
                 .translation(T + "chunkLoading.targetMspt")
-                .defineInRange("targetMspt", 38.0, 10.0, 50.0);
+                .defineInRange("targetMspt", 40.0, 10.0, 50.0);
 
         common.pop();
 
@@ -229,14 +228,14 @@ public final class DemonCoreConfig {
         TICK_THROTTLE_DISTANCE = common
                 .comment("Entities closer than this many blocks to a player always tick normally.")
                 .translation(T + "tickOptimization.distance")
-                .defineInRange("throttleDistance", 64, 16, 256);
+                .defineInRange("throttleDistance", 48, 16, 256);
 
         TICK_THROTTLE_MAX_FACTOR = common
                 .comment("Maximum slowdown factor for very distant entities.",
-                        "4 means a far away entity ticks once every 4 ticks.",
+                        "6 means a far away entity ticks once every 6 ticks.",
                         "Higher values save more CPU but make distant farms run slower.")
                 .translation(T + "tickOptimization.maxFactor")
-                .defineInRange("maxSkipFactor", 4, 1, 8);
+                .defineInRange("maxSkipFactor", 6, 1, 8);
 
         TICK_THROTTLE_ITEMS = common
                 .comment("Also throttle dropped items and experience orbs.",
@@ -253,9 +252,9 @@ public final class DemonCoreConfig {
 
         CHUNK_CACHE_SIZE = common
                 .comment("Maximum number of chunk positions kept in the predictive cache.",
-                        "Each entry costs about 16 bytes, so 8192 entries is roughly 128 KB.")
+                        "Each entry costs about 16 bytes, so 16384 entries is roughly 256 KB.")
                 .translation(T + "memory.chunkCacheSize")
-                .defineInRange("chunkCacheSize", 8192, 256, 131072);
+                .defineInRange("chunkCacheSize", 16384, 256, 131072);
 
         AUTO_TRIM = common
                 .comment("Automatically shrink caches when the heap gets tight.",
@@ -286,9 +285,8 @@ public final class DemonCoreConfig {
 
         client.comment(
                 "Client side rendering optimizations.",
-                "DemonCore never modifies your vanilla video settings - changing graphics mode,",
-                "render distance or ambient occlusion forces a full world re-mesh and costs far",
-                "more FPS than it saves. All limits below are applied internally instead."
+                "DemonCore focuses on LOD, batching, and particle management.",
+                "Entity frustum culling is handled by the EntityCulling mod if installed."
         ).push("rendering");
 
         RENDER_OPTIMIZATION = client
@@ -296,34 +294,23 @@ public final class DemonCoreConfig {
                 .translation(T + "rendering.enabled")
                 .define("enabled", true);
 
-        ENTITY_CULLING = client
-                .comment("Skip rendering entities that are outside the camera frustum or beyond the cull distance.")
-                .translation(T + "rendering.entityCulling")
-                .define("entityCulling", true);
-
-        ENTITY_CULL_DISTANCE = client
-                .comment("Entities further away than this many blocks are not rendered.",
-                        "Vanilla already limits most mobs to 64 blocks, so 96 is effectively lossless.")
-                .translation(T + "rendering.entityCullDistance")
-                .defineInRange("entityCullDistance", 96, 16, 256);
-
         ENTITY_SHADOW_DISTANCE = client
                 .comment("Maximum distance in blocks at which entity drop shadows are drawn.",
-                        "0 disables entity shadows entirely. Shadows are surprisingly expensive in crowded areas.")
+                        "0 disables entity shadows entirely. Shadows are surprisingly expensive in crowded areas.",
+                        "Note: Entity culling is handled by the EntityCulling mod if installed.")
                 .translation(T + "rendering.entityShadowDistance")
-                .defineInRange("entityShadowDistance", 24, 0, 64);
+                .defineInRange("entityShadowDistance", 48, 0, 96);
 
         BLOCK_ENTITY_CULLING = client
-                .comment("Skip rendering distant block entities such as chests, signs, banners and beds.",
-                        "This is separate from chunk rendering and is not covered by Sodium.")
+                .comment("Enable block entity distance culling.")
                 .translation(T + "rendering.blockEntityCulling")
                 .define("blockEntityCulling", true);
 
         BLOCK_ENTITY_CULL_DISTANCE = client
-                .comment("Block entities further away than this many blocks are not rendered.",
-                        "Large storage rooms benefit the most from lowering this.")
+                .comment("Maximum distance in blocks at which block entities are drawn.",
+                        "Only applies if blockEntityCulling is enabled.")
                 .translation(T + "rendering.blockEntityCullDistance")
-                .defineInRange("blockEntityCullDistance", 48, 8, 256);
+                .defineInRange("blockEntityCullDistance", 48, 16, 128);
 
         client.pop();
 
@@ -341,9 +328,9 @@ public final class DemonCoreConfig {
         GEOMETRY_CACHE_MB = client
                 .comment("How many MB of heap RAM DemonCore may use for geometry caching.",
                         "Each MB reduces GPU vertex upload bandwidth by a comparable amount.",
-                        "128-256 MB is a good starting point for systems with 8 GB+ total RAM.")
+                        "256-384 MB is optimal for systems with 8 GB+ total RAM.")
                 .translation(T + "geometryCache.sizeMb")
-                .defineInRange("geometryCacheSizeMb", 192, 32, 1024);
+                .defineInRange("geometryCacheSizeMb", 256, 32, 1024);
 
         VISIBILITY_LATTICE = client
                 .comment("Maintain a coarse in-RAM visibility lattice for each camera chunk.",

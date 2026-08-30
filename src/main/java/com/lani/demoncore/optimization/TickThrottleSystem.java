@@ -21,7 +21,9 @@ public final class TickThrottleSystem {
     
     public static boolean shouldSkip(Entity entity) {
         if (entity == null || !DemonCoreConfig.isEnabled()
-                || !DemonCoreConfig.getBool(DemonCoreConfig.TICK_THROTTLE_ENABLED, true)) {
+                || !DemonCoreConfig.getBool(DemonCoreConfig.TICK_THROTTLE_ENABLED, true)
+                || DemonCoreConfig.isVulcanMode()
+                || com.lani.demoncore.compat.ModCompat.hasTickOptimizer()) {
             return false;
         }
 

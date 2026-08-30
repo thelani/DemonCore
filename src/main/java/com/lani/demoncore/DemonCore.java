@@ -3,9 +3,11 @@ package com.lani.demoncore;
 import com.lani.demoncore.chunk.ChunkPreLoader;
 import com.lani.demoncore.command.DemonCoreCommand;
 import com.lani.demoncore.config.DemonCoreConfig;
+import com.lani.demoncore.event.OptimizationEventHandler;
 import com.lani.demoncore.event.VehicleEventHandler;
 import com.lani.demoncore.optimization.DimensionChangeOptimizer;
 import com.lani.demoncore.optimization.GCStutterGuard;
+import com.lani.demoncore.optimization.HardwareMonitor;
 import com.lani.demoncore.optimization.PerformanceMonitor;
 import com.lani.demoncore.optimization.TickThrottleSystem;
 import net.minecraft.resources.ResourceKey;
@@ -35,6 +37,8 @@ public class DemonCore {
     private static DemonCore instance;
 
     private final ChunkPreLoader chunkLoader;
+    private final VehicleEventHandler vehicleHandler;
+    private final OptimizationEventHandler optimizationHandler;
 
     public DemonCore(IEventBus modEventBus, ModContainer modContainer) {
         instance = this;
@@ -43,10 +47,13 @@ public class DemonCore {
         modContainer.registerConfig(ModConfig.Type.CLIENT, DemonCoreConfig.CLIENT_SPEC);
 
         this.chunkLoader = new ChunkPreLoader();
+        this.vehicleHandler = new VehicleEventHandler(chunkLoader);
+        this.optimizationHandler = OptimizationEventHandler.create();
 
         modEventBus.addListener(this::commonSetup);
 
-        NeoForge.EVENT_BUS.register(new VehicleEventHandler(chunkLoader));
+        NeoForge.EVENT_BUS.register(vehicleHandler);
+        NeoForge.EVENT_BUS.register(optimizationHandler);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
         NeoForge.EVENT_BUS.addListener(this::onServerTickPre);
         NeoForge.EVENT_BUS.addListener(this::onServerTickPost);
@@ -62,12 +69,22 @@ public class DemonCore {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         GCStutterGuard.init();
-        LOGGER.info("DemonCore ready. Chunk pre-loading {}, tick throttling {}.",
+        HardwareMonitor.init();
+        com.lani.demoncore.optimization.CacheSystem.init();
+        LOGGER.info("DemonCore ready. Chunk pre-loading {}, tick throttling {}."
+                        + " Hardware tier: {}, available processors: {}, total memory: {} MB.",
                 DemonCoreConfig.getBool(DemonCoreConfig.CHUNK_LOADING_ENABLED, true) ? "on" : "off",
-                DemonCoreConfig.getBool(DemonCoreConfig.TICK_THROTTLE_ENABLED, true) ? "on" : "off");
+                DemonCoreConfig.getBool(DemonCoreConfig.TICK_THROTTLE_ENABLED, true) ? "on" : "off",
+                HardwareMonitor.getHardwareTier().name(),
+                HardwareMonitor.getAvailableProcessors(),
+                HardwareMonitor.getTotalMemoryMb());
 
         if (DemonCoreConfig.isVulcanMode()) {
             LOGGER.warn("VULCAN MODE is enabled - DemonCore safety limits are disabled.");
+        }
+
+        if (DemonCoreConfig.isDebug() || DemonCoreConfig.getBool(DemonCoreConfig.DEBUG_LOGGING, false)) {
+            LOGGER.info("[DemonCore] Debug/verbose logging ACTIVE - all optimization subsystems will report their status to latest.log");
         }
     }
 
@@ -109,6 +126,12 @@ public class DemonCore {
     private void onServerStopping(ServerStoppingEvent event) {
         chunkLoader.shutdown();
         PerformanceMonitor.reset();
+        OptimizationEventHandler.reset();
+        vehicleHandler.reset();
+        TickThrottleSystem.reset();
+        com.lani.demoncore.optimization.CacheSystem.clearAll();
+        com.lani.demoncore.optimization.FrameProfiler.reset();
+        LOGGER.info("DemonCore shutdown cleanly.");
     }
 
     public static DemonCore getInstance() {
@@ -117,6 +140,14 @@ public class DemonCore {
 
     public ChunkPreLoader getChunkLoader() {
         return chunkLoader;
+    }
+
+    public VehicleEventHandler getVehicleHandler() {
+        return vehicleHandler;
+    }
+
+    public OptimizationEventHandler getOptimizationHandler() {
+        return optimizationHandler;
     }
 
     
@@ -143,19 +174,21 @@ public class DemonCore {
 
             GCStutterGuard.sample();
             com.lani.demoncore.optimization.SilentChunkTracker.tick();
+            com.lani.demoncore.optimization.CacheSystem.autoTrimIfNeeded();
 
-            
             long now = System.currentTimeMillis();
             if (now - lastGpuBalancerTickMs >= 500L) {
                 lastGpuBalancerTickMs = now;
                 com.lani.demoncore.optimization.GpuRamBalancer.evaluate();
                 com.lani.demoncore.optimization.GeometryCache.trimStale();
+                com.lani.demoncore.optimization.CacheSystem.chunkSize();
             }
 
             ResourceKey<Level> dimension = mc.level.dimension();
             if (lastDimension != null && !lastDimension.equals(dimension)) {
                 DimensionChangeOptimizer.onDimensionChange(
                         lastDimension.location().toString(), dimension.location().toString());
+                com.lani.demoncore.optimization.CacheSystem.clearAll();
             }
             lastDimension = dimension;
         }

@@ -1,6 +1,5 @@
 package com.lani.demoncore.mixin;
 
-import com.lani.demoncore.optimization.EntityCuller;
 import com.lani.demoncore.optimization.EntityLODSystem;
 import com.lani.demoncore.optimization.GeometryCache;
 import com.lani.demoncore.optimization.VisibilityLattice;
@@ -28,27 +27,20 @@ public class EntityRenderDispatcherMixin {
             int packedLight,
             CallbackInfo ci) {
 
-        
+        // Visibility lattice check
         if (!VisibilityLattice.entityMaybeVisible(entity)) {
             ci.cancel();
             return;
         }
 
-        
-        if (EntityCuller.shouldCull(entity)) {
-            ci.cancel();
-            return;
-        }
-
-        
-        
+        // EntityCulling mod handles frustum culling, we only do LOD
         EntityLODSystem.LOD lod = EntityLODSystem.computeLOD(entity);
         if (lod == EntityLODSystem.LOD.DOT) {
             ci.cancel();
             return;
         }
 
-        
+        // Cache entity pose for geometry reuse
         if (!GeometryCache.isEntityPoseFresh(entity, rotationYaw, partialTicks)) {
             GeometryCache.putEntity(entity, rotationYaw, partialTicks);
         }
@@ -65,12 +57,7 @@ public class EntityRenderDispatcherMixin {
             float size,
             CallbackInfo ci) {
 
-        if (EntityCuller.shouldCullShadow(entity)) {
-            ci.cancel();
-            return;
-        }
-
-        
+        // Disable shadows for entities using simplified LOD
         EntityLODSystem.LOD lod = EntityLODSystem.computeLOD(entity);
         if (lod.level >= EntityLODSystem.LOD.SIMPLE.level) {
             ci.cancel();

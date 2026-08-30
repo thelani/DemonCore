@@ -1,9 +1,8 @@
 package com.lani.demoncore.mixin;
 
 import com.lani.demoncore.optimization.BatchRenderCoordinator;
-import com.lani.demoncore.optimization.BlockEntityCuller;
 import com.lani.demoncore.optimization.BottleneckDetector;
-import com.lani.demoncore.optimization.EntityCuller;
+import com.lani.demoncore.optimization.EntityLODSystem;
 import com.lani.demoncore.optimization.FrameProfiler;
 import com.lani.demoncore.optimization.GeometryCache;
 import com.lani.demoncore.optimization.PredictiveFrameScheduler;
@@ -26,8 +25,7 @@ public class LevelRendererMixin {
         VisibilityLattice.rebuild(demoncore$frameSeq);
         FrameProfiler.onLevelRenderStart();
         GeometryCache.beginFrame();
-        EntityCuller.beginFrame();
-        BlockEntityCuller.beginFrame();
+        EntityLODSystem.beginFrame();
         BatchRenderCoordinator.beginFrame();
     }
 

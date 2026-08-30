@@ -37,6 +37,10 @@ public final class BottleneckDetector {
     private static volatile Bottleneck current = Bottleneck.UNKNOWN;
     private static volatile String advice = "";
     private static long lastEvalNs;
+    private static volatile Bottleneck previousReported = Bottleneck.UNKNOWN;
+    private static Bottleneck candidateResult = Bottleneck.UNKNOWN;
+    private static int candidateCount = 0;
+    private static final int HYSTERESIS_THRESHOLD = 3;
 
     
     public static void update() {
@@ -46,7 +50,7 @@ public final class BottleneckDetector {
         }
 
         long now = System.nanoTime();
-        if (now - lastEvalNs < 500_000_000L) {
+        if (now - lastEvalNs < 2_000_000_000L) {
             return;
         }
         lastEvalNs = now;
@@ -96,8 +100,33 @@ public final class BottleneckDetector {
             tip = "No single dominant cost.";
         }
 
-        current = result;
-        advice = tip;
+        if (result == candidateResult) {
+            candidateCount++;
+        } else {
+            candidateResult = result;
+            candidateCount = 1;
+        }
+
+        if (candidateCount >= HYSTERESIS_THRESHOLD && current != result) {
+            Bottleneck old = current;
+            current = result;
+            advice = tip;
+            if (previousReported != result) {
+                previousReported = result;
+                postEvent(old, result, cpuShare, gpuShare, otherShare, tip);
+            }
+        }
+    }
+
+    private static void postEvent(
+            Bottleneck prev, Bottleneck curr,
+            double cpuShare, double gpuShare, double otherShare, String advice) {
+        try {
+            com.lani.demoncore.event.BottleneckChangedEvent event = new com.lani.demoncore.event.BottleneckChangedEvent(
+                    prev, curr, cpuShare, gpuShare, otherShare, advice);
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(event);
+        } catch (Throwable ignored) {
+        }
     }
 
     public static Bottleneck get() {

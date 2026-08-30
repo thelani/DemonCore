@@ -8,33 +8,14 @@ config="demoncore.mixins.json"
 
 [[mods]]
 modId="demoncore"
-version="1.0.0"
+version="1.0.2"
 displayName="DemonCore"
 authors="Lani"
 displayURL="https://github.com/thelani/DemonCore"
 logoFile="demoncore_logo.png"
 description='''
-DemonCore is a performance mod built for players who move faster than Minecraft was designed for.
+Minecraft Chunk load & optimization mod
 
-Predictive chunk loading
-  Chunk tickets are queued along your predicted flight path, so vehicles travelling at
-  thousands of blocks per second never outrun the world generator. Loading pressure is
-  driven by the measured server tick time, so it slows itself down instead of stalling
-  the game.
-
-Rendering optimizations Sodium does not cover
-  Entity and block entity culling, an entity shadow budget and a real particle cap.
-  DemonCore never changes your video settings - it applies every limit internally.
-
-Bottleneck detection
-  DemonCore measures how much of each frame is spent on the CPU versus waiting on the
-  GPU and tells you which one is actually limiting your frame rate.
-
-Tick optimization
-  Distance based throttling for entity AI, pathfinding and block entities. Renderer
-  mods do not touch game ticks, so this is headroom you cannot get from Sodium.
-
-Everything is configurable in game under Mods -> DemonCore -> Config.
 '''
 
 [[dependencies.demoncore]]

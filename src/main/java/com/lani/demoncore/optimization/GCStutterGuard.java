@@ -82,18 +82,16 @@ public final class GCStutterGuard {
         }
 
         double heapUsage = getHeapUsage();
-        if (heapUsage < 0.85 && gcTimeShare < 0.08) {
+        if (heapUsage < 0.92 && gcTimeShare < 0.08) {
             return;
         }
 
         lastTrimMs = nowWall;
 
-        
-        
-        int freed = ChunkPosCache.trimToRatio(0.5);
+        int freed = CacheSystem.chunkTrimToRatio(0.5);
 
         if (DemonCoreConfig.isDebug()) {
-            LOGGER.info("Heap at {}% with {}% GC time - released {} cached chunk entries",
+            LOGGER.info("Heap at {}% with {}% GC time - released {} cached chunk entries via CacheSystem",
                     Math.round(heapUsage * 100), Math.round(gcTimeShare * 100), freed);
         }
     }

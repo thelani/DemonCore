@@ -17,8 +17,13 @@ public abstract class LivingEntityRendererMixin {
             cancellable = true,
             require = 0
     )
-    private <T extends LivingEntity> void demoncore$lodgeAnimFreeze(
-            T entity,
+    private void demoncore$lodgeAnimFreeze(
+            LivingEntity entity,
+            com.mojang.blaze3d.vertex.PoseStack poseStack,
+            float ageInTicks,
+            float rotationYaw,
+            float partialTicks,
+            float nativeScale,
             CallbackInfo ci) {
         if (!EntityLODSystem.animationAllowed(entity)) {
             ci.cancel();

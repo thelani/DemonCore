@@ -1,8 +1,11 @@
 package com.lani.demoncore.chunk;
 
 import com.lani.demoncore.DemonCore;
+import com.lani.demoncore.compat.chunk.ChunkModCompat;
 import com.lani.demoncore.config.DemonCoreConfig;
-import com.lani.demoncore.optimization.ChunkPosCache;
+import com.lani.demoncore.optimization.AdaptiveTickBudget;
+import com.lani.demoncore.optimization.CacheSystem;
+import com.lani.demoncore.optimization.GpuRamBalancer;
 import com.lani.demoncore.optimization.PerformanceMonitor;
 import com.lani.demoncore.optimization.SmartChunkCalculator;
 import net.minecraft.server.level.ServerLevel;
@@ -34,8 +37,7 @@ public class ChunkPreLoader {
         return ticketType;
     }
 
-    private record TicketRequest(ServerLevel level, ChunkPos pos) {
-    }
+    private record TicketRequest(ServerLevel level, ChunkPos pos) {}
 
     private final Deque<TicketRequest> pending = new ArrayDeque<>();
     private final Map<UUID, Integer> trackedPerEntity = new ConcurrentHashMap<>();
@@ -45,60 +47,47 @@ public class ChunkPreLoader {
     private long totalSubmitted;
     private long totalDropped;
     private long totalDeduped;
+    private long ticketSkipped;
 
-    
-    
-    
-
-    public void loadChunks(Entity entity, double speed) {
+    public int loadChunks(Entity entity, double speed) {
         if (!DemonCoreConfig.isEnabled()
                 || !DemonCoreConfig.getBool(DemonCoreConfig.CHUNK_LOADING_ENABLED, true)) {
-            return;
+            return 0;
         }
-        if (!(entity.level() instanceof ServerLevel level)) {
-            return;
-        }
+        if (!(entity.level() instanceof ServerLevel level)) return 0;
 
         Vec3 motion = entity.getDeltaMovement();
-        if (motion.lengthSqr() < 1.0E-4) {
-            return;
-        }
+        if (motion.lengthSqr() < 1.0E-4) return 0;
 
         double threshold = DemonCoreConfig.getDouble(DemonCoreConfig.ACTIVATION_SPEED, 24.0);
-        if (threshold > 0.0 && speed < threshold) {
-            return;
-        }
+        if (threshold > 0.0 && speed < threshold) return 0;
 
         UUID id = entity.getUUID();
-
-        
-        
         Long last = lastRequestTick.get(id);
-        if (last != null && last == serverTick) {
-            return;
-        }
+        if (last != null && last == serverTick) return 0;
         lastRequestTick.put(id, serverTick);
 
         int maxChunks = resolveChunkBudget(speed);
-        if (maxChunks <= 0) {
-            return;
-        }
+        if (maxChunks <= 0) return 0;
 
         List<ChunkPos> predicted = SmartChunkCalculator.predictPath(
                 entity.position(), motion, speed, maxChunks);
 
-        if (predicted.isEmpty()) {
-            return;
-        }
+        if (predicted.isEmpty()) return 0;
+
+        boolean useTickets = ChunkModCompat.shouldUseTickets();
+        int cap = resolveMaxQueuedTickets();
 
         int queued = 0;
-        int cap = DemonCoreConfig.getInt(DemonCoreConfig.MAX_QUEUED_TICKETS, 4096);
-
         synchronized (pending) {
             for (ChunkPos pos : predicted) {
-                
-                if (!ChunkPosCache.markRequested(pos.x, pos.z)) {
+                if (!CacheSystem.chunkRecordRequest(pos.x, pos.z)) {
                     totalDeduped++;
+                    continue;
+                }
+
+                if (!useTickets) {
+                    ticketSkipped++;
                     continue;
                 }
 
@@ -106,32 +95,41 @@ public class ChunkPreLoader {
                 queued++;
 
                 while (pending.size() > cap) {
-                    
-                    
                     pending.removeFirst();
                     totalDropped++;
                 }
             }
         }
 
-        if (queued > 0) {
-            trackedPerEntity.merge(id, queued, Integer::sum);
-        }
+        if (queued > 0) trackedPerEntity.merge(id, queued, Integer::sum);
+        return queued;
     }
 
     private int resolveChunkBudget(double speed) {
         int maxChunks = DemonCoreConfig.getInt(DemonCoreConfig.MAX_CHUNKS, 96);
+        if (ChunkModCompat.shouldReduceQueue()) maxChunks = Math.min(maxChunks, 64);
 
         if (DemonCoreConfig.isVulcanMode()) {
             maxChunks *= 2;
         } else if (DemonCoreConfig.getBool(DemonCoreConfig.ADAPTIVE_BACKPRESSURE, true)) {
-            
-            double scale = PerformanceMonitor.getServerLevel().budgetScale();
+            double scale = Math.min(1.0, Math.min(
+                    PerformanceMonitor.getServerLevel().budgetScale(),
+                    AdaptiveTickBudget.getBudgetScale()
+            ));
+            double gpuScale = 1.0;
+            double gpu = GpuRamBalancer.getLastGpuUtil();
+            if (gpu > GpuRamBalancer.getHardGpuCap()) {
+                gpuScale = Math.max(0.35, 1.0 - (gpu - GpuRamBalancer.getHardGpuCap()) * 3.0);
+            }
+            double ram = GpuRamBalancer.getLastRamUtil();
+            double ramScale = 1.0;
+            if (ram > GpuRamBalancer.getHardRamCap()) {
+                ramScale = Math.max(0.35, 1.0 - (ram - GpuRamBalancer.getHardRamCap()) * 2.4);
+            }
+            scale = Math.min(scale, Math.min(gpuScale, ramScale));
             maxChunks = (int) Math.max(4, maxChunks * scale);
         }
 
-        
-        
         if (speed > 500.0) {
             double boost = 1.0 + Math.min(1.0, Math.log10(speed / 500.0));
             maxChunks = (int) (maxChunks * boost);
@@ -140,19 +138,17 @@ public class ChunkPreLoader {
         return maxChunks;
     }
 
-    
-    
-    
+    private int resolveMaxQueuedTickets() {
+        int cap = DemonCoreConfig.getInt(DemonCoreConfig.MAX_QUEUED_TICKETS, 4096);
+        if (ChunkModCompat.shouldReduceQueue()) cap = Math.min(cap, 1024);
+        return cap;
+    }
 
     public void tick() {
         serverTick++;
-
-        if (!DemonCoreConfig.isEnabled()) {
-            return;
-        }
-
+        ChunkModCompat.resolve();
+        if (!DemonCoreConfig.isEnabled()) return;
         drainQueue();
-
         if ((serverTick % 200L) == 0L) {
             trackedPerEntity.clear();
             lastRequestTick.entrySet().removeIf(e -> serverTick - e.getValue() > 200L);
@@ -161,23 +157,18 @@ public class ChunkPreLoader {
 
     private void drainQueue() {
         int budget = resolvePerTickBudget();
-        if (budget <= 0) {
-            return;
-        }
+        if (budget <= 0) return;
 
-        int radius = DemonCoreConfig.getInt(DemonCoreConfig.TICKET_RADIUS, 0);
+        int radiusCfg = DemonCoreConfig.getInt(DemonCoreConfig.TICKET_RADIUS, 0);
+        int radius = ChunkModCompat.getMaxTicketRadiusOverride(radiusCfg);
         TicketType<ChunkPos> type = ticketType();
 
         List<TicketRequest> batch;
         synchronized (pending) {
-            if (pending.isEmpty()) {
-                return;
-            }
+            if (pending.isEmpty()) return;
             int n = Math.min(budget, pending.size());
             batch = new ArrayList<>(n);
-            for (int i = 0; i < n; i++) {
-                batch.add(pending.removeFirst());
-            }
+            for (int i = 0; i < n; i++) batch.add(pending.removeFirst());
         }
 
         for (TicketRequest req : batch) {
@@ -193,36 +184,32 @@ public class ChunkPreLoader {
     }
 
     private int resolvePerTickBudget() {
-        int budget = DemonCoreConfig.getInt(DemonCoreConfig.CHUNKS_PER_TICK, 16);
+        int cfg = DemonCoreConfig.getInt(DemonCoreConfig.CHUNKS_PER_TICK, 16);
+        int cap = ChunkModCompat.getChunksPerTickCap(cfg);
+        int budget = Math.min(cfg, cap);
 
-        if (DemonCoreConfig.isVulcanMode()) {
-            return budget * 3;
+        if (DemonCoreConfig.isVulcanMode()) return budget * 3;
+        if (!DemonCoreConfig.getBool(DemonCoreConfig.ADAPTIVE_BACKPRESSURE, true)) return budget;
+
+        double headroom = Math.min(PerformanceMonitor.getServerHeadroom(), AdaptiveTickBudget.getBudgetScale());
+        double gpu = GpuRamBalancer.getLastGpuUtil();
+        if (gpu > GpuRamBalancer.getHardGpuCap()) {
+            headroom = Math.min(headroom, 0.70);
         }
-
-        if (!DemonCoreConfig.getBool(DemonCoreConfig.ADAPTIVE_BACKPRESSURE, true)) {
-            return budget;
+        double ram = GpuRamBalancer.getLastRamUtil();
+        if (ram > GpuRamBalancer.getHardRamCap()) {
+            headroom = Math.min(headroom, 0.65);
         }
-
-        
-        
-        double headroom = PerformanceMonitor.getServerHeadroom();
         int scaled = (int) Math.round(budget * headroom);
-
-        
         return Math.max(1, scaled);
     }
 
-    
-
     public int getQueueSize() {
-        synchronized (pending) {
-            return pending.size();
-        }
+        synchronized (pending) { return pending.size(); }
     }
 
-    public int getLoadedCount(UUID id) {
-        return trackedPerEntity.getOrDefault(id, 0);
-    }
+    public int getLoadedCount(UUID id) { return trackedPerEntity.getOrDefault(id, 0); }
+    public long getTicketSkipped() { return ticketSkipped; }
 
     public void cleanup(UUID id) {
         trackedPerEntity.remove(id);
@@ -230,27 +217,23 @@ public class ChunkPreLoader {
     }
 
     public void trackEntity(Entity entity) {
-        if (entity == null) {
-            return;
-        }
-        UUID id = entity.getUUID();
-        trackedPerEntity.putIfAbsent(id, 0);
+        if (entity == null) return;
+        trackedPerEntity.putIfAbsent(entity.getUUID(), 0);
     }
 
     public void shutdown() {
-        synchronized (pending) {
-            pending.clear();
-        }
+        synchronized (pending) { pending.clear(); }
         trackedPerEntity.clear();
         lastRequestTick.clear();
-        ChunkPosCache.clear();
+        CacheSystem.chunkClear();
     }
 
     public String getStats() {
         return String.format(
-                "Chunk loader: %d queued | %d submitted | %d deduped | %d dropped%n%s%n%s",
-                getQueueSize(), totalSubmitted, totalDeduped, totalDropped,
-                ChunkPosCache.getStats(),
-                PerformanceMonitor.getServerStats());
+                "Chunk loader: %d queued | %d submitted | %d deduped | %d dropped | %d skipped%n%s%n%s%n%s",
+                getQueueSize(), totalSubmitted, totalDeduped, totalDropped, ticketSkipped,
+                CacheSystem.chunkStats(),
+                PerformanceMonitor.getServerStats(),
+                ChunkModCompat.getStats());
     }
 }
